@@ -25,14 +25,15 @@
 </head>
 <body>
     <div id="root"></div>
- <audio id="bgMusic" loop preload="auto" src="./music.mp3"></audio>
+    <!-- 这里的路径是 ./music.mp3 -->
+    <audio id="bgMusic" loop preload="auto" src="./music.mp3"></audio>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
         function App() {
             const [isPlaying, setIsPlaying] = useState(false);
-            const [hasInteracted, setHasInteracted] = useState(false);
+            const[hasInteracted, setHasInteracted] = useState(false);
             const audioRef = useRef(null);
 
             useEffect(() => {
@@ -47,7 +48,6 @@
                 };
                 frame();
 
-                
                 const attemptPlay = () => {
                     if (audioRef.current && !isPlaying) {
                         audioRef.current.play()
@@ -55,7 +55,9 @@
                                 setIsPlaying(true);
                                 setHasInteracted(true);
                             })
-                            .catch(e => console.error("播放失败:", e));
+                            .catch(e => {
+                                console.error("自动播放失败:", e);
+                            });
                     }
                 };
 
@@ -71,11 +73,18 @@
             const toggleMusic = (e) => {
                 e.stopPropagation(); // 防止触发 window 的点击事件
                 if (!audioRef.current) return;
+                
                 if (isPlaying) {
                     audioRef.current.pause();
                     setIsPlaying(false);
                 } else {
-                    audioRef.current.play().then(() => setIsPlaying(true));
+                    audioRef.current.play()
+                        .then(() => setIsPlaying(true))
+                        .catch(e => {
+                            // 加上这个弹窗，如果找不到文件就会提示你
+                            alert("播放失败啦！请检查同文件夹下是不是有一个名叫 music.mp3 的文件。注意：如果电脑隐藏了后缀名，请直接把文件命名为 music 即可！");
+                            console.error("播放报错:", e);
+                        });
                 }
             };
 
@@ -86,11 +95,13 @@
                             {i % 2 === 0 ? '❤️' : '⭐'}
                         </div>
                     ))}
+                    
                     <div className="fixed top-6 right-6 flex flex-col items-end gap-2 z-50">
-                        <button onClick={toggleMusic} className="w-12 h-12 glass-card rounded-full flex items-center justify-center text-rose-500 shadow-lg">
-                            {isPlaying ? '🎵' : '🔇'}
+                        <button onClick={toggleMusic} className="w-12 h-12 glass-card rounded-full flex items-center justify-center text-rose-500 shadow-lg text-xl">
+                            {/* 这里去掉了以前像禁止符号的 🔇，换成了播放 ▶️ */}
+                            {isPlaying ? '🎵' : '▶️'}
                         </button>
-                        {!hasInteracted && <span className="text-[10px] text-rose-400 font-bold animate-bounce"></span>}
+                        {!hasInteracted && <span className="text-[10px] text-rose-400 font-bold animate-bounce mt-1">点击开启音乐</span>}
                     </div>
 
                     <section className="min-h-[85vh] flex flex-col items-center justify-center p-6 text-center">
@@ -147,5 +158,3 @@
     </script>
 </body>
 </html>
-
-
