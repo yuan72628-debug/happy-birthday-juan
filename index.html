@@ -25,7 +25,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- 这里的路径是 ./music.mp3 -->
     <audio id="bgMusic" loop preload="auto" src="./music.mp3"></audio>
 
     <script type="text/babel">
@@ -38,8 +37,7 @@
 
             useEffect(() => {
                 audioRef.current = document.getElementById('bgMusic');
-                
-                // 自动撒花
+         
                 const end = Date.now() + 5000;
                 const frame = () => {
                     confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffafbd', '#ffc3a0'] });
@@ -81,8 +79,8 @@
                     audioRef.current.play()
                         .then(() => setIsPlaying(true))
                         .catch(e => {
-                            // 加上这个弹窗，如果找不到文件就会提示你
-                            alert("播放失败啦！请检查同文件夹下是不是有一个名叫 music.mp3 的文件。注意：如果电脑隐藏了后缀名，请直接把文件命名为 music 即可！");
+                           
+                            alert("播放失败啦！");
                             console.error("播放报错:", e);
                         });
                 }
@@ -98,7 +96,6 @@
                     
                     <div className="fixed top-6 right-6 flex flex-col items-end gap-2 z-50">
                         <button onClick={toggleMusic} className="w-12 h-12 glass-card rounded-full flex items-center justify-center text-rose-500 shadow-lg text-xl">
-                            {/* 这里去掉了以前像禁止符号的 🔇，换成了播放 ▶️ */}
                             {isPlaying ? '🎵' : '▶️'}
                         </button>
                         {!hasInteracted && <span className="text-[10px] text-rose-400 font-bold animate-bounce mt-1">点击开启音乐</span>}
@@ -137,7 +134,7 @@
                                     <div className="w-14 h-14 rounded-full bg-rose-500 flex items-center justify-center text-white text-2xl shadow-lg">❤️</div>
                                     <div>
                                         <p className="font-semibold text-rose-900 text-lg">爱你,娟宝</p>
-                                        <p className="text-sm text-rose-400">2026年3月2日</p>
+                                        <p className="text-sm text-rose-400">2026年3月3日</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,3 +155,4 @@
     </script>
 </body>
 </html>
+
