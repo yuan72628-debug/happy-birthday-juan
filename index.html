@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>生日快乐，宝宝</title>
+    <!-- 引入基础库 -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- 还原为经典的纸片礼花库 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
+    <!-- 顶级字体库 -->
     <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.staticfile.net/lxgw-wenkai-screen-webfont/1.7.0/style.css" />
 
@@ -22,13 +25,13 @@
             overflow-x: hidden;
         }
 
-        /* 字体类 */
         .font-english { font-family: 'Cormorant Garamond', serif; }
         .font-serif-cn { font-family: 'Noto Serif SC', 'Songti SC', serif; }
         .font-pen { 
             font-family: "LXGW WenKai Screen", "KaiTi", "楷体", serif; 
             letter-spacing: 1.5px;
         }
+        
         .bg-dreamy {
             background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
             background-image: 
@@ -38,17 +41,17 @@
             background-attachment: fixed;
         }
 
-
+        /* 磨砂玻璃信纸质感 */
         .paper-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
             box-shadow: 0 20px 40px -10px rgba(180, 130, 140, 0.15), 
                         inset 0 0 0 1px rgba(255, 255, 255, 0.8);
         }
 
- 
+        /* 孔明灯光晕 */
         .lantern {
             position: absolute;
             bottom: -50px;
@@ -59,16 +62,27 @@
         }
         @keyframes rise {
             0% { transform: translateY(0) scale(1); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.5; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.3; }
             100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
         }
 
-       
+        /* 手工编写的“初雪飘落”核心动画 */
+        @keyframes dropDown {
+            0% { transform: translateY(-10vh); opacity: 0; }
+            5% { opacity: var(--target-opacity); }
+            95% { opacity: var(--target-opacity); }
+            100% { transform: translateY(110vh); opacity: 0; }
+        }
+        @keyframes swayAndRotate {
+            0% { transform: translateX(calc(var(--sway) * -1px)) rotate(calc(var(--rot) * -1)); }
+            100% { transform: translateX(calc(var(--sway) * 1px)) rotate(var(--rot)); }
+        }
+
+        /* 旋转与呼吸效果 */
         .spin-slow { animation: spin 4s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-      
         .fade-in-up {
             animation: fadeInUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             opacity: 0;
@@ -84,6 +98,7 @@
             50% { opacity: 1; transform: scale(1.05); }
         }
 
+        /* 火漆印章 */
         .wax-seal {
             background: linear-gradient(135deg, #d33c44 0%, #a11f25 100%);
             box-shadow: 0 4px 10px rgba(161, 31, 37, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
@@ -97,29 +112,62 @@
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
+
+        // 飘起的浪漫光晕
         const Lanterns = () => {
-            const lanterns = Array.from({ length: 20 }).map((_, i) => ({
+            const lanterns = Array.from({ length: 15 }).map((_, i) => ({
                 id: i,
                 left: `${Math.random() * 100}%`,
                 size: `${Math.random() * 40 + 20}px`,
                 duration: `${Math.random() * 15 + 10}s`,
                 delay: `${Math.random() * 5}s`
             }));
-
             return (
                 <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
                     {lanterns.map(l => (
-                        <div 
-                            key={l.id} 
-                            className="lantern"
-                            style={{ 
-                                left: l.left, 
-                                width: l.size, 
-                                height: l.size, 
-                                animationDuration: l.duration, 
-                                animationDelay: l.delay 
-                            }}
-                        ></div>
+                        <div key={l.id} className="lantern" style={{ left: l.left, width: l.size, height: l.size, animationDuration: l.duration, animationDelay: l.delay }}></div>
+                    ))}
+                </div>
+            );
+        };
+
+        // 唯美的爱心与蛋糕飘落特效（重点优化）
+        const RomanticShower = () => {
+            const [items, setItems] = useState([]);
+            useEffect(() => {
+                const newItems = Array.from({ length: 30 }).map((_, i) => {
+                    const isCake = Math.random() > 0.85; // 少量精致蛋糕
+                    const isStar = Math.random() > 0.7 && !isCake; // 适量闪烁星星
+                    return {
+                        id: i,
+                        emoji: isCake ? '🎂' : (isStar ? '✨' : '❤️'),
+                        left: `${Math.random() * 100}%`,
+                        delay: `${Math.random() * 8}s`, // 随机错开出现时间
+                        duration: `${10 + Math.random() * 10}s`, // 非常缓慢地落下 (10-20秒)
+                        swayDuration: `${2 + Math.random() * 2}s`, // 摇曳频率
+                        size: isCake ? `${1.1 + Math.random() * 0.4}rem` : `${0.7 + Math.random() * 0.4}rem`, // 控制尺寸，更加精致
+                        sway: isCake ? 10 : 20 + Math.random() * 30, // 蛋糕摇晃幅度极小，爱心摇晃幅度大
+                        rot: isCake ? `5deg` : `35deg`, // 蛋糕几乎不翻转，保证高级感
+                        opacity: isCake ? 0.85 : 0.4 + Math.random() * 0.4
+                    };
+                });
+                setItems(newItems);
+            },[]);
+
+            return (
+                <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                    {items.map(item => (
+                        <div key={item.id} className="absolute" style={{ top: '-10%', left: item.left, opacity: 0, animation: `dropDown ${item.duration} ${item.delay} linear infinite`, '--target-opacity': item.opacity }}>
+                            <div style={{
+                                fontSize: item.size,
+                                animation: `swayAndRotate ${item.swayDuration} ease-in-out infinite alternate`,
+                                '--sway': item.sway,
+                                '--rot': item.rot,
+                                filter: 'drop-shadow(0 2px 4px rgba(255,182,193,0.3))'
+                            }}>
+                                {item.emoji}
+                            </div>
+                        </div>
                     ))}
                 </div>
             );
@@ -137,48 +185,15 @@
             const handleOpen = () => {
                 setHasOpened(true);
                 
-                const end = Date.now() + 4500;
-                
-                try {
-                    const heart = confetti.shapeFromText({ text: '❤️', scalar: 3 });
-                    const cake = confetti.shapeFromText({ text: '🎂', scalar: 3 });
-                    const sparkle = confetti.shapeFromText({ text: '✨', scalar: 2 });
-
-                    const frame = () => {
-                        confetti({
-                            particleCount: 3, 
-                            angle: 60, 
-                            spread: 60, 
-                            origin: { x: 0 }, 
-                            shapes:[heart, cake, sparkle], 
-                            scalar: 2, 
-                            gravity: 0.8,
-                            ticks: 250 // 飘落的时间长度
-                        });
-                        confetti({
-                            particleCount: 3, 
-                            angle: 120, 
-                            spread: 60, 
-                            origin: { x: 1 }, 
-                            shapes: [heart, cake, sparkle], 
-                            scalar: 2, 
-                            gravity: 0.8,
-                            ticks: 250
-                        });
-                        
-                        if (Date.now() < end) requestAnimationFrame(frame);
-                    };
-                    frame();
-                } catch (e) {
-                    console.error("动画加载出错: ", e);
-                }
+                // 仅在开信瞬间喷发高级的香槟金和玫瑰粉纸片，营造仪式感
+                const colors =['#fce7f3', '#fda4af', '#fef3c7', '#fbcfe8'];
+                confetti({ particleCount: 70, angle: 60, spread: 60, origin: { x: 0, y: 0.5 }, colors: colors, disableForReducedMotion: true });
+                confetti({ particleCount: 70, angle: 120, spread: 60, origin: { x: 1, y: 0.5 }, colors: colors, disableForReducedMotion: true });
 
                 if (audioRef.current) {
                     audioRef.current.play()
                         .then(() => setIsPlaying(true))
-                        .catch(e => {
-                            alert("播放音乐失败啦！请确保文件夹里有 music.mp3 文件。");
-                        });
+                        .catch(e => console.error("播放音乐失败", e));
                 }
             };
 
@@ -208,7 +223,9 @@
 
             return (
                 <div className="min-h-screen bg-dreamy relative">
+                    {/* 背景动画组件 */}
                     <Lanterns />
+                    <RomanticShower />
 
                     <div className="fixed top-6 right-6 z-50">
                         <div 
@@ -234,9 +251,8 @@
                         <div className="w-px h-16 bg-gradient-to-b from-rose-300 to-transparent mx-auto mt-8"></div>
                     </header>
 
-                    <main className="max-w-2xl mx-auto px-5 pb-24 relative z-10 fade-in-up" style={{ animationDelay: '0.6s' }}>
+                    <main className="max-w-2xl mx-auto px-5 pb-24 relative z-40 fade-in-up" style={{ animationDelay: '0.6s' }}>
                         <div className="paper-card rounded-2xl p-8 md:p-14 relative">
-                        
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent opacity-50"></div>
                             
                             <div className="text-center mb-12">
@@ -261,7 +277,7 @@
 
                             <div className="mt-16 flex flex-col items-center justify-center border-t border-stone-100 pt-10">
                                 <div className="font-pen text-2xl text-stone-800 mb-2">爱你，娟宝</div>
-                                <div className="font-english tracking-widest text-stone-400 text-sm">2026年3月3日</div>
+                                <div className="font-english tracking-widest text-stone-400 text-sm mt-1">2026年3月3日</div>
                             </div>
                         </div>
                     </main>
