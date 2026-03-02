@@ -4,33 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>生日快乐，宝宝</title>
+    <!-- 引入基础库 -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <link href="https://fonts.font.im/css?family=Long+Cang&display=swap" rel="stylesheet">
-    <link href="https://fonts.font.im/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- 引入国内极速镜像的高级字体库 -->
+    <!-- Cormorant Garamond (极其优雅的英文字体) + Noto Serif SC (思源宋体) -->
+    <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- 霞鹜文楷 (国内评价最高的开源钢笔手写体，通过国内CDN极速加载) -->
+    <link rel="stylesheet" href="https://cdn.staticfile.net/lxgw-wenkai-screen-webfont/1.7.0/style.css" />
 
     <style>
-        body { margin: 0; background-color: #fdfcfb; font-family: -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
-        .font-serif { font-family: 'Playfair Display', serif; }
-        
-       
-        .font-handwriting { 
-            font-family: "方正硬笔行书简体", "方正硬笔行书", "FZ YingBi XingShu", "华文行楷", "STXingkai", "行楷", "Xingkai SC", 'Long Cang', cursive; 
-            letter-spacing: 2.5px; 
+        body { 
+            margin: 0; 
+            background-color: #fdfaf6; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden;
         }
 
-        .gradient-mesh {
-            background-color: #fdfcfb;
-            background-image: radial-gradient(at 0% 0%, hsla(353,100%,93%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,95%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,91%,1) 0, transparent 50%);
+        /* 字体类 */
+        .font-english { font-family: 'Cormorant Garamond', serif; }
+        .font-serif-cn { font-family: 'Noto Serif SC', 'Songti SC', serif; }
+        .font-pen { 
+            font-family: "LXGW WenKai Screen", "KaiTi", "楷体", serif; 
+            letter-spacing: 1.5px;
+        }
+
+        /* 高级动态渐变背景 */
+        .bg-dreamy {
+            background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(255, 228, 230, 0.4) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(254, 243, 199, 0.5) 0px, transparent 50%),
+                radial-gradient(at 40% 80%, rgba(252, 211, 211, 0.4) 0px, transparent 50%);
             background-attachment: fixed;
         }
-        .glass-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 10px 30px rgba(244, 63, 94, 0.08); }
-        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0); opacity: 0; } 10%, 90% { opacity: 1; } 100% { transform: translateY(-110vh) rotate(20deg); opacity: 0; } }
-        .floating-icon { position: fixed; bottom: -10%; pointer-events: none; z-index: 0; animation: float linear infinite; }
+
+        /* 纸张质感卡片 */
+        .paper-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px -10px rgba(180, 130, 140, 0.15), 
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 模拟孔明灯/萤火虫的发光圆点 */
+        .lantern {
+            position: absolute;
+            bottom: -50px;
+            background: radial-gradient(circle, rgba(255,223,186,0.9) 0%, rgba(255,183,178,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rise linear infinite;
+        }
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+        }
+
+        /* 旋转的黑胶唱片 */
+        .spin-slow { animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* 优雅入场动画 */
+        .fade-in-up {
+            animation: fadeInUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 呼吸效果 */
+        .animate-breathe { animation: breathe 3s ease-in-out infinite; }
+        @keyframes breathe {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        
+        /* 浪漫的火漆印章样式 */
+        .wax-seal {
+            background: linear-gradient(135deg, #d33c44 0%, #a11f25 100%);
+            box-shadow: 0 4px 10px rgba(161, 31, 37, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            color: #ffdae0;
+        }
     </style>
 </head>
 <body>
@@ -40,126 +106,158 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
+        // 生成背景漂浮的孔明灯/光晕
+        const Lanterns = () => {
+            const lanterns = Array.from({ length: 20 }).map((_, i) => ({
+                id: i,
+                left: `${Math.random() * 100}%`,
+                size: `${Math.random() * 40 + 20}px`,
+                duration: `${Math.random() * 15 + 10}s`,
+                delay: `${Math.random() * 5}s`
+            }));
+
+            return (
+                <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+                    {lanterns.map(l => (
+                        <div 
+                            key={l.id} 
+                            className="lantern"
+                            style={{ 
+                                left: l.left, 
+                                width: l.size, 
+                                height: l.size, 
+                                animationDuration: l.duration, 
+                                animationDelay: l.delay 
+                            }}
+                        ></div>
+                    ))}
+                </div>
+            );
+        };
+
         function App() {
+            const [hasOpened, setHasOpened] = useState(false);
             const[isPlaying, setIsPlaying] = useState(false);
-            const [hasInteracted, setHasInteracted] = useState(false);
             const audioRef = useRef(null);
 
             useEffect(() => {
                 audioRef.current = document.getElementById('bgMusic');
+            },[]);
+
+            // 拆开信件的仪式
+            const handleOpen = () => {
+                setHasOpened(true);
                 
-                // 自动撒花
-                const end = Date.now() + 5000;
+                // 撒出玫瑰金和香槟金的花瓣
+                const end = Date.now() + 4000;
+                const colors =['#fce7f3', '#fda4af', '#fef3c7', '#fbcfe8'];
                 const frame = () => {
-                    confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors:['#ffafbd', '#ffc3a0'] });
-                    confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors:['#ffafbd', '#ffc3a0'] });
+                    confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 }, colors: colors });
+                    confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 }, colors: colors });
                     if (Date.now() < end) requestAnimationFrame(frame);
                 };
                 frame();
 
-                const attemptPlay = () => {
-                    if (audioRef.current && !isPlaying) {
-                        audioRef.current.play()
-                            .then(() => {
-                                setIsPlaying(true);
-                                setHasInteracted(true);
-                            })
-                            .catch(e => {
-                                console.error("自动播放失败:", e);
-                            });
-                    }
-                };
-
-                window.addEventListener('touchstart', attemptPlay);
-                window.addEventListener('click', attemptPlay);
-
-                return () => {
-                    window.removeEventListener('touchstart', attemptPlay);
-                    window.removeEventListener('click', attemptPlay);
-                };
-            }, [isPlaying]);
-
-            const toggleMusic = (e) => {
-                e.stopPropagation(); 
-                if (!audioRef.current) return;
-                
-                if (isPlaying) {
-                    audioRef.current.pause();
-                    setIsPlaying(false);
-                } else {
+                // 播放音乐
+                if (audioRef.current) {
                     audioRef.current.play()
                         .then(() => setIsPlaying(true))
                         .catch(e => {
-                            alert("找不到同目录下的 music.mp3 文件，请检查！");
+                            alert("播放音乐失败啦！请确保文件夹里有 music.mp3 文件。");
                         });
                 }
             };
 
-            return (
-                <div className="min-h-screen gradient-mesh relative overflow-hidden">
-                    {[...Array(15)].map((_, i) => (
-                        <div key={i} className="floating-icon" style={{ left: `${Math.random() * 100}%`, animationDuration: `${10 + Math.random() * 10}s`, animationDelay: `${Math.random() * 5}s`, fontSize: `${15 + Math.random() * 20}px` }}>
-                            {i % 2 === 0 ? '❤️' : '⭐'}
+            const toggleMusic = () => {
+                if (!audioRef.current) return;
+                if (isPlaying) {
+                    audioRef.current.pause();
+                    setIsPlaying(false);
+                } else {
+                    audioRef.current.play().then(() => setIsPlaying(true));
+                }
+            };
+
+            // 欢迎/未拆开界面
+            if (!hasOpened) {
+                return (
+                    <div className="min-h-screen bg-dreamy flex flex-col items-center justify-center relative z-10 cursor-pointer" onClick={handleOpen}>
+                        <div className="text-center animate-breathe">
+                            <div className="w-16 h-16 mx-auto mb-6 rounded-full wax-seal flex items-center justify-center text-2xl font-english italic">
+                                J
+                            </div>
+                            <h1 className="font-serif-cn text-2xl tracking-widest text-stone-700 mb-2">有一封专属信件，请查收</h1>
+                            <p className="font-english text-stone-400 tracking-[0.3em] uppercase text-xs mt-4">Tap anywhere to open</p>
                         </div>
-                    ))}
+                    </div>
+                );
+            }
+
+            // 正式信件界面
+            return (
+                <div className="min-h-screen bg-dreamy relative">
+                    <Lanterns />
                     
-                    <div className="fixed top-6 right-6 flex flex-col items-end gap-2 z-50">
-                        <button onClick={toggleMusic} className="w-12 h-12 glass-card rounded-full flex items-center justify-center text-rose-500 shadow-lg text-xl">
-                            {isPlaying ? '🎵' : '▶️'}
-                        </button>
-                        {!hasInteracted && <span className="text-[10px] text-rose-400 font-bold animate-bounce mt-1">点击开启音乐</span>}
+                    {/* 右上角高级音乐播放器 */}
+                    <div className="fixed top-6 right-6 z-50">
+                        <div 
+                            onClick={toggleMusic} 
+                            className={`w-12 h-12 rounded-full border border-stone-200 shadow-md flex items-center justify-center cursor-pointer backdrop-blur-md bg-white/50 transition-transform hover:scale-105 ${isPlaying ? 'spin-slow' : ''}`}
+                            style={{
+                                background: isPlaying 
+                                    ? 'radial-gradient(circle at center, #1f2937 40%, #111827 80%, #374151 100%)' 
+                                    : 'rgba(255,255,255,0.8)'
+                            }}
+                        >
+                            {isPlaying ? (
+                                <div className="w-3 h-3 bg-stone-200 rounded-full border border-stone-800"></div>
+                            ) : (
+                                <span className="text-stone-500 text-xs font-serif-cn">音乐</span>
+                            )}
+                        </div>
                     </div>
 
-                    <section className="min-h-[85vh] flex flex-col items-center justify-center p-6 text-center">
-                        <div className="animate-fade-in">
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-rose-400 mb-6 block">Happy Birthday</span>
-                            <h2 className="font-serif text-5xl md:text-8xl mb-12 leading-tight text-rose-900">愿你<br /><span className="italic text-rose-500">一切顺遂</span></h2>
-                            <div className="relative inline-block transition-transform hover:scale-105 duration-500">
-                                <div className="w-48 h-48 md:w-64 md:h-64 glass-card rounded-[48px] flex items-center justify-center text-rose-500 shadow-2xl relative z-10">
-                                    <span style={{fontSize: '80px'}}>🎂</span>
-                                </div>
-                                <div className="absolute inset-0 bg-rose-200/30 blur-3xl rounded-full -z-10 animate-pulse"></div>
+                    {/* 头部标题区 */}
+                    <header className="pt-24 pb-12 px-6 text-center z-10 relative fade-in-up" style={{ animationDelay: '0.2s' }}>
+                        <p className="font-english text-rose-400 uppercase tracking-[0.4em] text-xs mb-6">Happy Birthday My Love</p>
+                        <h2 className="font-serif-cn text-5xl md:text-6xl text-stone-800 mb-6 font-light">愿你，<span className="text-rose-600 italic font-english pr-2">一切顺遂</span></h2>
+                        <div className="w-px h-16 bg-gradient-to-b from-rose-300 to-transparent mx-auto mt-8"></div>
+                    </header>
+
+                    {/* 信件主体区 */}
+                    <main className="max-w-2xl mx-auto px-5 pb-24 relative z-10 fade-in-up" style={{ animationDelay: '0.6s' }}>
+                        <div className="paper-card rounded-2xl p-8 md:p-14 relative">
+                            {/* 装饰元素 */}
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent opacity-50"></div>
+                            
+                            <div className="text-center mb-12">
+                                <span className="font-english text-4xl text-rose-300">"</span>
+                            </div>
+                            
+                            {/* 信件正文，排版采用散文诗风格 */}
+                            <article className="font-pen text-stone-700 text-[1.1rem] md:text-xl leading-[2.2] space-y-6">
+                                <p>宝宝，今天是正月十五，元宵月圆，也是你的生日，遗憾不能陪你一起。</p>
+                                
+                                <p>回头一看，这天刚好是我们认识的第 61 天，也是我们一起走过的第三个月的第一天。这么多特别的日子撞在一起，好像在冥冥之中告诉我：<span className="text-rose-600 border-b border-rose-200 pb-1">你一出现，所有的美好都凑齐了。</span></p>
+                                
+                                <p>这 60 天里，我开心过、心动过、也更确定我是真的很喜欢你。喜欢和你聊天的每一刻，喜欢想到你就会不自觉笑起来的感觉，更喜欢我们慢慢靠近、慢慢熟悉的这段时光。</p>
+                                
+                                <p>对我来说，这是和你一起走向更久更远的新起点。</p>
+                                
+                                <p>我想祝你：永远被爱，永远被温柔以待，永远开开心心！</p>
+                                
+                                <p className="text-2xl md:text-3xl text-rose-500 mt-12 mb-8 font-bold tracking-widest text-center">
+                                    宝宝，生日快乐。
+                                </p>
+                            </article>
+
+                            {/* 优雅落款 */}
+                            <div className="mt-16 flex flex-col items-center justify-center border-t border-stone-100 pt-10">
+                                <div className="font-pen text-2xl text-stone-800 mb-2">爱你，娟宝</div>
+                                <div className="font-english tracking-widest text-stone-400 text-sm">March 2, 2026</div>
                             </div>
                         </div>
-                        <div className="mt-20 flex flex-col items-center gap-2 opacity-30">
-                            <span className="text-[10px] tracking-widest">向下滑动</span>
-                            <div className="w-px h-10 bg-rose-400"></div>
-                        </div>
-                    </section>
-
-                    <section className="max-w-lg mx-auto px-6 py-10">
-                        <div className="glass-card rounded-[48px] p-8 md:p-14 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-40 h-40 bg-rose-100/50 rounded-full blur-3xl -mr-20 -mt-20"></div>
-                            <div className="relative z-10">
-                                <div className="text-3xl mb-8">💌</div>
-                                
-                                <h3 className="font-handwriting font-bold text-2xl md:text-3xl mb-8 leading-relaxed text-rose-900">
-                                    宝宝，今天是正月十五，元宵月圆，也是你的生日，很遗憾不能陪你一起。
-                                </h3>
-                                
-                                <div className="space-y-6 text-gray-800 leading-loose text-xl font-handwriting">
-                                    <p>回头一看，这天刚好是我们认识的第61天，也是我们一起走过的第三个月的第一天。这么多特别的日子撞在一起，好像在告诉我：你一出现，所有美好都凑齐了。</p>
-                                    <p>这60天里，我开心过、心动过、也更确定我是真的很喜欢你，喜欢和你聊天的每一刻，喜欢想到你就会不自觉笑起来的感觉，喜欢我们慢慢靠近、慢慢熟悉的这段时光。</p>
-                                    <p>对我来说，这是和你一起走向更久更远的新起点。我想祝你：永远被爱，永远被温柔以待，永远开开心心！</p>
-                                    <p className="text-3xl font-bold text-rose-500 mt-12 mb-4">宝宝，生日快乐。</p>
-                                </div>
-
-                                <div className="mt-14 pt-10 border-t border-rose-100 flex items-center gap-5">
-                                    <div className="w-14 h-14 rounded-full bg-rose-500 flex items-center justify-center text-white text-2xl shadow-lg">❤️</div>
-                                    <div>
-                                        <p className="font-handwriting font-bold text-rose-900 text-2xl">爱你，娟宝</p>
-                                        <p className="text-sm text-rose-400 mt-1">2026年3月3日</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <footer className="py-20 text-center">
-                        <div className="text-3xl mb-6">💖</div>
-                        <h2 className="font-serif text-3xl mb-4 italic text-rose-900">愿你开心度过每一天！</h2>
-                        <p className="text-gray-400 text-[10px] tracking-widest uppercase">Made with love for your special day</p>
-                    </footer>
+                    </main>
                 </div>
             );
         }
@@ -169,4 +267,3 @@
     </script>
 </body>
 </html>
-
