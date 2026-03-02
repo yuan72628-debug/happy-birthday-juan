@@ -9,10 +9,18 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <!-- 在这里引入了中文手写字体 Long Cang -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Long+Cang&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background-color: #fdfcfb; font-family: -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
         .font-serif { font-family: 'Playfair Display', serif; }
+        
+        /* 专门为信件增加的手写体样式 */
+        .font-handwriting { 
+            font-family: 'Long Cang', "KaiTi", "楷体", cursive; 
+            letter-spacing: 1.5px; /* 增加一点字间距更好看 */
+        }
+
         .gradient-mesh {
             background-color: #fdfcfb;
             background-image: radial-gradient(at 0% 0%, hsla(353,100%,93%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,95%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,91%,1) 0, transparent 50%);
@@ -25,6 +33,7 @@
 </head>
 <body>
     <div id="root"></div>
+    <!-- 音乐路径保持 ./music.mp3 不变 -->
     <audio id="bgMusic" loop preload="auto" src="./music.mp3"></audio>
 
     <script type="text/babel">
@@ -32,16 +41,17 @@
 
         function App() {
             const [isPlaying, setIsPlaying] = useState(false);
-            const[hasInteracted, setHasInteracted] = useState(false);
+            const [hasInteracted, setHasInteracted] = useState(false);
             const audioRef = useRef(null);
 
             useEffect(() => {
                 audioRef.current = document.getElementById('bgMusic');
-         
+                
+                // 自动撒花
                 const end = Date.now() + 5000;
                 const frame = () => {
-                    confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffafbd', '#ffc3a0'] });
-                    confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ffafbd', '#ffc3a0'] });
+                    confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors:['#ffafbd', '#ffc3a0'] });
+                    confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors:['#ffafbd', '#ffc3a0'] });
                     if (Date.now() < end) requestAnimationFrame(frame);
                 };
                 frame();
@@ -79,7 +89,6 @@
                     audioRef.current.play()
                         .then(() => setIsPlaying(true))
                         .catch(e => {
-                           
                             alert("播放失败啦！");
                             console.error("播放报错:", e);
                         });
@@ -123,18 +132,25 @@
                             <div className="absolute top-0 right-0 w-40 h-40 bg-rose-100/50 rounded-full blur-3xl -mr-20 -mt-20"></div>
                             <div className="relative z-10">
                                 <div className="text-3xl mb-8">💌</div>
-                                <h3 className="font-serif text-2xl md:text-3xl mb-10 leading-relaxed text-rose-900">宝宝，今天是正月十五，元宵月圆，也是你的生日，不能陪你一起。</h3>
-                                <div className="space-y-8 text-gray-700 leading-relaxed text-lg font-light">
+                                
+                                {/* 这里的标题和正文都换成了 font-handwriting（手写体） */}
+                                <h3 className="font-handwriting text-3xl md:text-4xl mb-10 leading-relaxed text-rose-900">
+                                    宝宝，今天是正月十五，元宵月圆，也是你的生日，不能陪你一起。
+                                </h3>
+                                
+                                <div className="space-y-6 text-gray-800 leading-loose text-2xl font-handwriting">
                                     <p>回头一看，这天刚好是我们认识的第61天，也是我们一起走过的第三个月的第一天。这么多特别的日子撞在一起，好像在告诉我：你一出现，所有美好都凑齐了。</p>
-                                    <p>这60天里，我开心过、心动过、也更确定确定我是真的很喜欢你，喜欢和你聊天的每一刻，喜欢想到你就会不自觉笑起来的感觉，喜欢我们慢慢靠近、慢慢熟悉的这段时光。</p>
+                                    <p>这60天里，我开心过、心动过、也更确定我是真的很喜欢你，喜欢和你聊天的每一刻，喜欢想到你就会不自觉笑起来的感觉，喜欢我们慢慢靠近、慢慢熟悉的这段时光。</p>
                                     <p>对我来说，这是和你一起走向更久更远的新起点。我想祝你：永远被爱，永远被温柔以待，永远开开心心！</p>
-                                    <p className="text-3xl font-serif italic text-rose-500 mt-12">宝宝，生日快乐。</p>
+                                    <p className="text-4xl text-rose-500 mt-12 mb-4">宝宝，生日快乐。</p>
                                 </div>
+
                                 <div className="mt-14 pt-10 border-t border-rose-100 flex items-center gap-5">
                                     <div className="w-14 h-14 rounded-full bg-rose-500 flex items-center justify-center text-white text-2xl shadow-lg">❤️</div>
                                     <div>
-                                        <p className="font-semibold text-rose-900 text-lg">爱你,娟宝</p>
-                                        <p className="text-sm text-rose-400">2026年3月3日</p>
+                                       
+                                        <p className="font-handwriting font-bold text-rose-900 text-2xl">爱你，娟宝</p>
+                                        <p className="text-sm text-rose-400 mt-1">2026年3月3日</p>
                                     </div>
                                 </div>
                             </div>
@@ -155,4 +171,3 @@
     </script>
 </body>
 </html>
-
