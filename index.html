@@ -9,16 +9,17 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- 在这里引入了中文手写字体 Long Cang -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Long+Cang&display=swap" rel="stylesheet">
+    
+
+    <link href="https://fonts.font.im/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.staticfile.net/lxgw-wenkai-screen-webfont/1.7.0/style.css" />
+
     <style>
         body { margin: 0; background-color: #fdfcfb; font-family: -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
         .font-serif { font-family: 'Playfair Display', serif; }
-        
-        /* 专门为信件增加的手写体样式 */
         .font-handwriting { 
-            font-family: 'Long Cang', "KaiTi", "楷体", cursive; 
-            letter-spacing: 1.5px; /* 增加一点字间距更好看 */
+            font-family: "LXGW WenKai Screen", "KaiTi", "楷体", cursive; 
+            letter-spacing: 2px; 
         }
 
         .gradient-mesh {
@@ -33,7 +34,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- 音乐路径保持 ./music.mp3 不变 -->
     <audio id="bgMusic" loop preload="auto" src="./music.mp3"></audio>
 
     <script type="text/babel">
@@ -79,7 +79,7 @@
             }, [isPlaying]);
 
             const toggleMusic = (e) => {
-                e.stopPropagation(); // 防止触发 window 的点击事件
+                e.stopPropagation(); 
                 if (!audioRef.current) return;
                 
                 if (isPlaying) {
@@ -89,8 +89,7 @@
                     audioRef.current.play()
                         .then(() => setIsPlaying(true))
                         .catch(e => {
-                            alert("播放失败啦！");
-                            console.error("播放报错:", e);
+                            alert("找不到同目录下的 music.mp3 文件。");
                         });
                 }
             };
@@ -128,27 +127,25 @@
                     </section>
 
                     <section className="max-w-lg mx-auto px-6 py-10">
-                        <div className="glass-card rounded-[48px] p-10 md:p-14 relative overflow-hidden">
+                        <div className="glass-card rounded-[48px] p-8 md:p-14 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-40 h-40 bg-rose-100/50 rounded-full blur-3xl -mr-20 -mt-20"></div>
                             <div className="relative z-10">
                                 <div className="text-3xl mb-8">💌</div>
                                 
-                                {/* 这里的标题和正文都换成了 font-handwriting（手写体） */}
-                                <h3 className="font-handwriting text-3xl md:text-4xl mb-10 leading-relaxed text-rose-900">
+                                <h3 className="font-handwriting font-bold text-2xl md:text-3xl mb-8 leading-relaxed text-rose-900">
                                     宝宝，今天是正月十五，元宵月圆，也是你的生日，不能陪你一起。
                                 </h3>
                                 
-                                <div className="space-y-6 text-gray-800 leading-loose text-2xl font-handwriting">
+                                <div className="space-y-6 text-gray-800 leading-loose text-xl font-handwriting">
                                     <p>回头一看，这天刚好是我们认识的第61天，也是我们一起走过的第三个月的第一天。这么多特别的日子撞在一起，好像在告诉我：你一出现，所有美好都凑齐了。</p>
                                     <p>这60天里，我开心过、心动过、也更确定我是真的很喜欢你，喜欢和你聊天的每一刻，喜欢想到你就会不自觉笑起来的感觉，喜欢我们慢慢靠近、慢慢熟悉的这段时光。</p>
                                     <p>对我来说，这是和你一起走向更久更远的新起点。我想祝你：永远被爱，永远被温柔以待，永远开开心心！</p>
-                                    <p className="text-4xl text-rose-500 mt-12 mb-4">宝宝，生日快乐。</p>
+                                    <p className="text-3xl font-bold text-rose-500 mt-12 mb-4">宝宝，生日快乐。</p>
                                 </div>
 
                                 <div className="mt-14 pt-10 border-t border-rose-100 flex items-center gap-5">
                                     <div className="w-14 h-14 rounded-full bg-rose-500 flex items-center justify-center text-white text-2xl shadow-lg">❤️</div>
                                     <div>
-                                       
                                         <p className="font-handwriting font-bold text-rose-900 text-2xl">爱你，娟宝</p>
                                         <p className="text-sm text-rose-400 mt-1">2026年3月3日</p>
                                     </div>
