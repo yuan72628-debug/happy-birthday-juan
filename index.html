@@ -8,9 +8,8 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     
-
     <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.staticfile.net/lxgw-wenkai-screen-webfont/1.7.0/style.css" />
 
@@ -79,14 +78,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 呼吸效果 */
         .animate-breathe { animation: breathe 3s ease-in-out infinite; }
         @keyframes breathe {
             0%, 100% { opacity: 0.6; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.05); }
         }
-        
-        /* 浪漫的火漆印章样式 */
+
         .wax-seal {
             background: linear-gradient(135deg, #d33c44 0%, #a11f25 100%);
             box-shadow: 0 4px 10px rgba(161, 31, 37, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
@@ -129,8 +126,8 @@
         };
 
         function App() {
-            const [hasOpened, setHasOpened] = useState(false);
-            const[isPlaying, setIsPlaying] = useState(false);
+            const[hasOpened, setHasOpened] = useState(false);
+            const [isPlaying, setIsPlaying] = useState(false);
             const audioRef = useRef(null);
 
             useEffect(() => {
@@ -140,15 +137,41 @@
             const handleOpen = () => {
                 setHasOpened(true);
                 
+                const end = Date.now() + 4500;
+                
+                try {
+                    const heart = confetti.shapeFromText({ text: '❤️', scalar: 3 });
+                    const cake = confetti.shapeFromText({ text: '🎂', scalar: 3 });
+                    const sparkle = confetti.shapeFromText({ text: '✨', scalar: 2 });
 
-                const end = Date.now() + 4000;
-                const colors =['#fce7f3', '#fda4af', '#fef3c7', '#fbcfe8'];
-                const frame = () => {
-                    confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 }, colors: colors });
-                    confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 }, colors: colors });
-                    if (Date.now() < end) requestAnimationFrame(frame);
-                };
-                frame();
+                    const frame = () => {
+                        confetti({
+                            particleCount: 3, 
+                            angle: 60, 
+                            spread: 60, 
+                            origin: { x: 0 }, 
+                            shapes:[heart, cake, sparkle], 
+                            scalar: 2, 
+                            gravity: 0.8,
+                            ticks: 250 // 飘落的时间长度
+                        });
+                        confetti({
+                            particleCount: 3, 
+                            angle: 120, 
+                            spread: 60, 
+                            origin: { x: 1 }, 
+                            shapes: [heart, cake, sparkle], 
+                            scalar: 2, 
+                            gravity: 0.8,
+                            ticks: 250
+                        });
+                        
+                        if (Date.now() < end) requestAnimationFrame(frame);
+                    };
+                    frame();
+                } catch (e) {
+                    console.error("动画加载出错: ", e);
+                }
 
                 if (audioRef.current) {
                     audioRef.current.play()
@@ -169,7 +192,6 @@
                 }
             };
 
-         
             if (!hasOpened) {
                 return (
                     <div className="min-h-screen bg-dreamy flex flex-col items-center justify-center relative z-10 cursor-pointer" onClick={handleOpen}>
@@ -184,11 +206,9 @@
                 );
             }
 
-
             return (
                 <div className="min-h-screen bg-dreamy relative">
                     <Lanterns />
-                    
 
                     <div className="fixed top-6 right-6 z-50">
                         <div 
@@ -208,14 +228,12 @@
                         </div>
                     </div>
 
-                 
                     <header className="pt-24 pb-12 px-6 text-center z-10 relative fade-in-up" style={{ animationDelay: '0.2s' }}>
                         <p className="font-english text-rose-400 uppercase tracking-[0.4em] text-xs mb-6">Happy Birthday My Love</p>
                         <h2 className="font-serif-cn text-5xl md:text-6xl text-stone-800 mb-6 font-light">愿你，<span className="text-rose-600 italic font-english pr-2">一切顺遂</span></h2>
                         <div className="w-px h-16 bg-gradient-to-b from-rose-300 to-transparent mx-auto mt-8"></div>
                     </header>
 
-                  
                     <main className="max-w-2xl mx-auto px-5 pb-24 relative z-10 fade-in-up" style={{ animationDelay: '0.6s' }}>
                         <div className="paper-card rounded-2xl p-8 md:p-14 relative">
                         
@@ -225,9 +243,8 @@
                                 <span className="font-english text-4xl text-rose-300">"</span>
                             </div>
                             
-                         
                             <article className="font-pen text-stone-700 text-[1.1rem] md:text-xl leading-[2.2] space-y-6">
-                                <p>宝宝，今天是正月十五，元宵月圆，也是你的生日，遗憾不能陪你一起。</p>
+                                <p>宝宝，今天是正月十五，元宵月圆，也是你的生日，很遗憾不能陪你一起度过。</p>
                                 
                                 <p>回头一看，这天刚好是我们认识的第 61 天，也是我们一起走过的第三个月的第一天。这么多特别的日子撞在一起，好像在冥冥之中告诉我：<span className="text-rose-600 border-b border-rose-200 pb-1">你一出现，所有的美好都凑齐了。</span></p>
                                 
@@ -257,6 +274,3 @@
     </script>
 </body>
 </html>
-
-
-
