@@ -9,17 +9,18 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
 
+    <link href="https://fonts.font.im/css?family=Long+Cang&display=swap" rel="stylesheet">
     <link href="https://fonts.font.im/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.staticfile.net/lxgw-wenkai-screen-webfont/1.7.0/style.css" />
 
     <style>
         body { margin: 0; background-color: #fdfcfb; font-family: -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
         .font-serif { font-family: 'Playfair Display', serif; }
+        
+       
         .font-handwriting { 
-            font-family: "LXGW WenKai Screen", "KaiTi", "楷体", cursive; 
-            letter-spacing: 2px; 
+            font-family: "方正硬笔行书简体", "方正硬笔行书", "FZ YingBi XingShu", "华文行楷", "STXingkai", "行楷", "Xingkai SC", 'Long Cang', cursive; 
+            letter-spacing: 2.5px; 
         }
 
         .gradient-mesh {
@@ -40,7 +41,7 @@
         const { useState, useEffect, useRef } = React;
 
         function App() {
-            const [isPlaying, setIsPlaying] = useState(false);
+            const[isPlaying, setIsPlaying] = useState(false);
             const [hasInteracted, setHasInteracted] = useState(false);
             const audioRef = useRef(null);
 
@@ -89,7 +90,7 @@
                     audioRef.current.play()
                         .then(() => setIsPlaying(true))
                         .catch(e => {
-                            alert("找不到同目录下的 music.mp3 文件。");
+                            alert("找不到同目录下的 music.mp3 文件，请检查！");
                         });
                 }
             };
@@ -133,7 +134,7 @@
                                 <div className="text-3xl mb-8">💌</div>
                                 
                                 <h3 className="font-handwriting font-bold text-2xl md:text-3xl mb-8 leading-relaxed text-rose-900">
-                                    宝宝，今天是正月十五，元宵月圆，也是你的生日，很遗憾不能陪你一起。
+                                    宝宝，今天是正月十五，元宵月圆，也是你的生日，不能陪你一起。
                                 </h3>
                                 
                                 <div className="space-y-6 text-gray-800 leading-loose text-xl font-handwriting">
@@ -168,4 +169,3 @@
     </script>
 </body>
 </html>
-
