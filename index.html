@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>生日快乐，宝宝</title>
-    <!-- 引入基础库 -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 还原为经典的纸片礼花库 -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
-    <!-- 顶级字体库 -->
+
     <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.staticfile.net/lxgw-wenkai-screen-webfont/1.7.0/style.css" />
 
@@ -41,7 +38,6 @@
             background-attachment: fixed;
         }
 
-        /* 磨砂玻璃信纸质感 */
         .paper-card {
             background: rgba(255, 255, 255, 0.82);
             backdrop-filter: blur(16px);
@@ -51,7 +47,6 @@
                         inset 0 0 0 1px rgba(255, 255, 255, 0.8);
         }
 
-        /* 孔明灯光晕 */
         .lantern {
             position: absolute;
             bottom: -50px;
@@ -66,20 +61,17 @@
             90% { opacity: 0.3; }
             100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
         }
-
-        /* 手工编写的“初雪飘落”核心动画 */
         @keyframes dropDown {
             0% { transform: translateY(-10vh); opacity: 0; }
             5% { opacity: var(--target-opacity); }
             95% { opacity: var(--target-opacity); }
-            100% { transform: translateY(110vh); opacity: 0; }
+            100% { transform: translateY(210vh); opacity: 0; } /* 增加了飘落距离，覆盖第二屏 */
         }
         @keyframes swayAndRotate {
             0% { transform: translateX(calc(var(--sway) * -1px)) rotate(calc(var(--rot) * -1)); }
             100% { transform: translateX(calc(var(--sway) * 1px)) rotate(var(--rot)); }
         }
 
-        /* 旋转与呼吸效果 */
         .spin-slow { animation: spin 4s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
@@ -98,7 +90,18 @@
             50% { opacity: 1; transform: scale(1.05); }
         }
 
-        /* 火漆印章 */
+        .scroll-down-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(244,63,94,0.5), transparent);
+            animation: scrollDown 2s infinite;
+        }
+        @keyframes scrollDown {
+            0% { transform: translateY(-10px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(10px); opacity: 0; }
+        }
+
         .wax-seal {
             background: linear-gradient(135deg, #d33c44 0%, #a11f25 100%);
             box-shadow: 0 4px 10px rgba(161, 31, 37, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
@@ -113,7 +116,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // 飘起的浪漫光晕
         const Lanterns = () => {
             const lanterns = Array.from({ length: 15 }).map((_, i) => ({
                 id: i,
@@ -131,23 +133,22 @@
             );
         };
 
-        // 唯美的爱心与蛋糕飘落特效（重点优化）
         const RomanticShower = () => {
             const [items, setItems] = useState([]);
             useEffect(() => {
-                const newItems = Array.from({ length: 30 }).map((_, i) => {
-                    const isCake = Math.random() > 0.85; // 少量精致蛋糕
-                    const isStar = Math.random() > 0.7 && !isCake; // 适量闪烁星星
+                const newItems = Array.from({ length: 35 }).map((_, i) => {
+                    const isCake = Math.random() > 0.85; 
+                    const isStar = Math.random() > 0.7 && !isCake; 
                     return {
                         id: i,
                         emoji: isCake ? '🎂' : (isStar ? '✨' : '❤️'),
                         left: `${Math.random() * 100}%`,
-                        delay: `${Math.random() * 8}s`, // 随机错开出现时间
-                        duration: `${10 + Math.random() * 10}s`, // 非常缓慢地落下 (10-20秒)
-                        swayDuration: `${2 + Math.random() * 2}s`, // 摇曳频率
-                        size: isCake ? `${1.1 + Math.random() * 0.4}rem` : `${0.7 + Math.random() * 0.4}rem`, // 控制尺寸，更加精致
-                        sway: isCake ? 10 : 20 + Math.random() * 30, // 蛋糕摇晃幅度极小，爱心摇晃幅度大
-                        rot: isCake ? `5deg` : `35deg`, // 蛋糕几乎不翻转，保证高级感
+                        delay: `${Math.random() * 8}s`, 
+                        duration: `${12 + Math.random() * 12}s`, 
+                        swayDuration: `${2 + Math.random() * 2}s`, 
+                        size: isCake ? `${1.1 + Math.random() * 0.4}rem` : `${0.7 + Math.random() * 0.4}rem`, 
+                        sway: isCake ? 10 : 20 + Math.random() * 30, 
+                        rot: isCake ? `5deg` : `35deg`, 
                         opacity: isCake ? 0.85 : 0.4 + Math.random() * 0.4
                     };
                 });
@@ -175,7 +176,7 @@
 
         function App() {
             const[hasOpened, setHasOpened] = useState(false);
-            const [isPlaying, setIsPlaying] = useState(false);
+            const[isPlaying, setIsPlaying] = useState(false);
             const audioRef = useRef(null);
 
             useEffect(() => {
@@ -185,7 +186,6 @@
             const handleOpen = () => {
                 setHasOpened(true);
                 
-                // 仅在开信瞬间喷发高级的香槟金和玫瑰粉纸片，营造仪式感
                 const colors =['#fce7f3', '#fda4af', '#fef3c7', '#fbcfe8'];
                 confetti({ particleCount: 70, angle: 60, spread: 60, origin: { x: 0, y: 0.5 }, colors: colors, disableForReducedMotion: true });
                 confetti({ particleCount: 70, angle: 120, spread: 60, origin: { x: 1, y: 0.5 }, colors: colors, disableForReducedMotion: true });
@@ -222,8 +222,8 @@
             }
 
             return (
-                <div className="min-h-screen bg-dreamy relative">
-                    {/* 背景动画组件 */}
+                <div className="bg-dreamy relative">
+
                     <Lanterns />
                     <RomanticShower />
 
@@ -245,42 +245,60 @@
                         </div>
                     </div>
 
-                    <header className="pt-24 pb-12 px-6 text-center z-10 relative fade-in-up" style={{ animationDelay: '0.2s' }}>
-                        <p className="font-english text-rose-400 uppercase tracking-[0.4em] text-xs mb-6">Happy Birthday My Love</p>
-                        <h2 className="font-serif-cn text-5xl md:text-6xl text-stone-800 mb-6 font-light">愿你，<span className="text-rose-600 italic font-english pr-2">一切顺遂</span></h2>
-                        <div className="w-px h-16 bg-gradient-to-b from-rose-300 to-transparent mx-auto mt-8"></div>
-                    </header>
-
-                    <main className="max-w-2xl mx-auto px-5 pb-24 relative z-40 fade-in-up" style={{ animationDelay: '0.6s' }}>
-                        <div className="paper-card rounded-2xl p-8 md:p-14 relative">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent opacity-50"></div>
-                            
-                            <div className="text-center mb-12">
-                                <span className="font-english text-4xl text-rose-300">"</span>
-                            </div>
-                            
-                            <article className="font-pen text-stone-700 text-[1.1rem] md:text-xl leading-[2.2] space-y-6">
-                                <p>宝宝，今天是正月十五，元宵月圆，也是你的生日，很遗憾不能陪你一起度过。</p>
-                                
-                                <p>回头一看，这天刚好是我们认识的第 61 天，也是我们一起走过的第三个月的第一天。这么多特别的日子撞在一起，好像在冥冥之中告诉我：<span className="text-rose-600 border-b border-rose-200 pb-1">你一出现，所有的美好都凑齐了。</span></p>
-                                
-                                <p>这 60 天里，我开心过、心动过、也更确定我是真的很喜欢你。喜欢和你聊天的每一刻，喜欢想到你就会不自觉笑起来的感觉，更喜欢我们慢慢靠近、慢慢熟悉的这段时光。</p>
-                                
-                                <p>对我来说，这是和你一起走向更久更远的新起点。</p>
-                                
-                                <p>我想祝你：永远被爱，永远被温柔以待，永远开开心心！</p>
-                                
-                                <p className="text-2xl md:text-3xl text-rose-500 mt-12 mb-8 font-bold tracking-widest text-center">
-                                    宝宝，生日快乐。
-                                </p>
-                            </article>
-
-                            <div className="mt-16 flex flex-col items-center justify-center border-t border-stone-100 pt-10">
-                                <div className="font-pen text-2xl text-stone-800 mb-2">爱你，娟宝</div>
-                                <div className="font-english tracking-widest text-stone-400 text-sm mt-1">2026年3月3日</div>
-                            </div>
+                    <section className="min-h-screen flex flex-col items-center justify-center relative z-10 px-6">
+                        <div className="text-center fade-in-up" style={{ animationDelay: '0.2s' }}>
+                            <p className="font-english text-rose-400 uppercase tracking-[0.4em] text-xs mb-6">Happy Birthday My Love</p>
+                            <h2 className="font-serif-cn text-5xl md:text-7xl text-stone-800 mb-2 font-light tracking-wide">愿你，</h2>
+                            <h2 className="font-serif-cn text-5xl md:text-7xl text-stone-800 mb-6 font-light"><span className="text-rose-600 italic font-english pr-2">一切顺遂</span></h2>
                         </div>
-                    </main>
+   
+                        <div className="mt-12 mb-16 relative fade-in-up" style={{ animationDelay: '0.6s' }}>
+                            <div className="w-48 h-48 md:w-56 md:h-56 paper-card rounded-full flex items-center justify-center shadow-2xl relative z-10 animate-breathe">
+                                <span style={{fontSize: '5rem', filter: 'drop-shadow(0 10px 15px rgba(0,0,0,0.1))'}}>🎂</span>
+                            </div>
+                            <div className="absolute inset-0 bg-rose-200/50 blur-3xl rounded-full -z-10 animate-pulse scale-125"></div>
+                        </div>
+
+
+                        <div className="absolute bottom-10 flex flex-col items-center gap-3 fade-in-up" style={{ animationDelay: '1s' }}>
+                            <span className="font-serif-cn text-xs tracking-[0.2em] text-stone-500 opacity-80">向下滑动 · 查收信件</span>
+                            <div className="scroll-down-line"></div>
+                        </div>
+                    </section>
+
+
+                    <section className="min-h-screen flex items-center justify-center relative z-40 px-5 py-24">
+                        <main className="max-w-2xl w-full mx-auto">
+                            <div className="paper-card rounded-2xl p-8 md:p-14 relative">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent opacity-50"></div>
+                                
+                                <div className="text-center mb-10">
+                                    <span className="font-english text-5xl text-rose-300 opacity-60">"</span>
+                                </div>
+                                
+                                <article className="font-pen text-stone-700 text-[1.1rem] md:text-xl leading-[2.2] space-y-6">
+                                    <p>宝宝，今天是正月十五，元宵月圆，也是你的生日，很遗憾不能陪你一起度过。</p>
+                                    
+                                    <p>回头一看，这天刚好是我们认识的第 61 天，也是我们一起走过的第三个月的第一天。这么多特别的日子撞在一起，好像在冥冥之中告诉我：<span className="text-rose-600 border-b border-rose-200 pb-1">你一出现，所有的美好都凑齐了。</span></p>
+                                    
+                                    <p>这 60 天里，我开心过、心动过、也更确定我是真的很喜欢你。喜欢和你聊天的每一刻，喜欢想到你就会不自觉笑起来的感觉，更喜欢我们慢慢靠近、慢慢熟悉的这段时光。</p>
+                                    
+                                    <p>对我来说，这是和你一起走向更久更远的新起点。</p>
+                                    
+                                    <p>我想祝你：永远被爱，永远被温柔以待，永远开开心心！</p>
+                                    
+                                    <p className="text-2xl md:text-3xl text-rose-500 mt-16 mb-8 font-bold tracking-widest text-center">
+                                        宝宝，生日快乐。
+                                    </p>
+                                </article>
+
+                                <div className="mt-16 flex flex-col items-center justify-center border-t border-stone-100 pt-10">
+                                    <div className="font-pen text-2xl text-stone-800 mb-2">爱你，娟宝</div>
+                                    <div className="font-english tracking-widest text-stone-400 text-sm mt-1">2026年3月3日</div>
+                                </div>
+                            </div>
+                        </main>
+                    </section>
                 </div>
             );
         }
